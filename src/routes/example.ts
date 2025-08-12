@@ -7,7 +7,10 @@ import {
   rootRouter,
 } from '../init/router';
 
-const router = Router();
+// Create a router instance
+const router = Router({
+  base: '/example', // base is required for stripping prefix
+});
 
 router.get('/', (): Response => {
   return new Response('Hello, world!');
@@ -18,9 +21,10 @@ router.get('/hello/:name', (request: { params: { name: string } }): Response => 
   return new Response(`Hello, ${name}!`);
 });
 
+// Export asuna register
 const register: AsunaRegister = () => {
   // Register the routes with the root router
-  rootRouter.use('/example', router);
+  rootRouter.all('/example/*', router.fetch);
 };
 
 export default register;

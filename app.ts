@@ -8,6 +8,7 @@ import {
 import { invokeApp } from './src/execute';
 
 const routerNames: string[] = [
+  'root',
   'example',
 ];
 

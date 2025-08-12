@@ -23,26 +23,36 @@ export function invokeApp(): Asuna {
   };
 }
 
+const pendingPromises: Promise<void>[] = [];
+
 function loadRoutes(routerNames: string[]): Asuna {
+  // Map route names to their file URLs
   const routeDirectory = new URL('routes/', import.meta.url);
   const routeFilenames = routerNames.map(
     (n) => new URL(`${n}.ts`, routeDirectory),
   );
 
+  // Create a promise for each route module
   const routerMappers: Promise<AsunaRegisterModule>[] = routeFilenames.map(
     (n) => import(n.toString()),
   );
-  routerMappers.forEach((c) => c.then(
-    (f) => f.default(),
+
+  // Register each route module
+  pendingPromises.push(...routerMappers.map(
+    (c) => c.then((f) => f.default()),
   ));
 
   // Return application invoker
   return invokeApp();
 }
 
-function execute(): Promise<void> {
+async function execute(): Promise<void> {
+  // Get the fetch function from the root router
   const { fetch } = rootRouter;
-  serve({ fetch });
 
-  return Promise.resolve();
+  // Wait for all route registrations to complete
+  await Promise.allSettled(pendingPromises);
+
+  // Start the server
+  serve({ fetch });
 }
