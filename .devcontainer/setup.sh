@@ -1,5 +1,5 @@
 #!/bin/bash
-# Lavateinn - Tiny and flexible microservice framework.
+# Asuna - Tiny microservice framework.
 # SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
 # Shell options

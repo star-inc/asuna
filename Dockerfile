@@ -1,4 +1,4 @@
-# Lavateinn - Tiny and flexible microservice framework.
+# Asuna - Tiny microservice framework.
 # SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
 FROM oven/bun:alpine
@@ -16,7 +16,7 @@ RUN adduser -HD \
         -h /workplace \
         flandre
 
-RUN mkdir -p /.npm /workplace
+RUN mkdir -p /.bun /workplace
 WORKDIR /workplace
 ADD . /workplace
 
