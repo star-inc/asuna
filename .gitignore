@@ -1,5 +1,5 @@
 # App config files
-.env
+.env.local
 
 # Finder config file
 .DS_Store

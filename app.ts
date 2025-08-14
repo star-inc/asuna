@@ -5,7 +5,15 @@ import {
   APP_DESCRIPTION,
   APP_NAME,
 } from './src/init/const';
-import { invokeApp } from './src/execute';
+
+import {
+  instanceId,
+  instanceStartupTime,
+  instanceUrl,
+} from './src/init/instance';
+import {
+  invokeApp,
+} from './src/execute';
 
 const routerNames: string[] = [
   'root',
@@ -18,6 +26,9 @@ const displayStatus = () => {
   console.info('====');
   console.info(APP_DESCRIPTION, '\n');
   console.info('[Routes loaded]:', routerNames.join(', '));
+  console.info('[Startup Time]:', instanceStartupTime, '\n');
+  console.info('[Instance ID]:', instanceId);
+  console.info('[Instance URL]:', instanceUrl);
 };
 
 invokeApp().

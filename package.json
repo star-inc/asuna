@@ -10,7 +10,7 @@
   "type": "module",
   "main": "app.mjs",
   "engines": {
-    "node": ">=20.0.0"
+    "bun": ">=1.2.0"
   },
   "scripts": {
     "dev": "bun --watch app.ts",
@@ -29,7 +29,13 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/amqplib": "^0.10.7",
+    "@types/ioredis": "^5.0.0",
+    "amqplib": "^0.10.8",
     "http-status-codes": "^2.3.0",
-    "itty-router": "^5.0.22"
+    "ioredis": "^5.7.0",
+    "itty-router": "^5.0.22",
+    "mysql2": "^3.14.3",
+    "nanoid": "^5.1.5"
   }
 }
