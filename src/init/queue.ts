@@ -1,4 +1,4 @@
-// Asuna - Tiny microservice framework.
+// Asuna - Tiny and blazing-fast microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
 // queue-layer is used for delivering messages between services.
@@ -29,49 +29,49 @@ type SubscribeCallback = (message: amqp.ConsumeMessage|null) => void;
  */
 class Queue {
   /**
-     * The amqp instance.
-     * @type {amqp.ChannelModel|undefined}
-     */
+   * The amqp instance.
+   * @type {amqp.ChannelModel|undefined}
+   */
   _amqpClient: amqp.ChannelModel|undefined;
 
   /**
-     * The amqp channel instance.
-     * @type {amqp.Channel|undefined}
-     */
+   * The amqp channel instance.
+   * @type {amqp.Channel|undefined}
+   */
   _channel: amqp.Channel|undefined;
 
   /**
-     * The Asuna queue instance.
-     * @param {amqp.ChannelModel} client - The queue client.
-     * @param {amqp.Channel} channel - The queue channel.
-     */
+   * The Asuna queue instance.
+   * @param {amqp.ChannelModel} client - The queue client.
+   * @param {amqp.Channel} channel - The queue channel.
+   */
   constructor(client: amqp.ChannelModel, channel: amqp.Channel) {
     this._amqpClient = client;
     this._channel = channel;
   }
 
   /**
-     * Get the raw amqplib client.
-     * @returns {amqp.ChannelModel|undefined} The client.
-     */
+   * Get the raw amqplib client.
+   * @returns {amqp.ChannelModel|undefined} The client.
+   */
   rawClient(): amqp.ChannelModel|undefined {
     return this._amqpClient;
   }
 
   /**
-     * Get the raw amqplib channel.
-     * @returns {amqp.Channel|undefined} The channel.
-     */
+   * Get the raw amqplib channel.
+   * @returns {amqp.Channel|undefined} The channel.
+   */
   rawChannel(): amqp.Channel|undefined {
     return this._channel;
   }
 
   /**
-     * Subscribe to a topic.
-     * @param {string} topic - The topic to subscribe.
-     * @param {SubscribeCallback} callback - The callback function.
-     * @returns {void}
-     */
+   * Subscribe to a topic.
+   * @param {string} topic - The topic to subscribe.
+   * @param {SubscribeCallback} callback - The callback function.
+   * @returns {void}
+   */
   subscribe(topic: string, callback: SubscribeCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
     this._channel.assertQueue(topic, { durable: amqpDurable });
@@ -79,11 +79,11 @@ class Queue {
   }
 
   /**
-     * Receive a message from a topic.
-     * @param {string} topic - The topic to receive.
-     * @param {SubscribeCallback} callback - The callback function.
-     * @returns {void}
-     */
+   * Receive a message from a topic.
+   * @param {string} topic - The topic to receive.
+   * @param {SubscribeCallback} callback - The callback function.
+   * @returns {void}
+   */
   receive(topic: string, callback: SubscribeCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
     this._channel.assertQueue(topic, { durable: amqpDurable });
@@ -91,11 +91,11 @@ class Queue {
   }
 
   /**
-     * Deliver a message to a topic.
-     * @param {string} topic - The topic to send.
-     * @param {Buffer} content - The content to send.
-     * @returns {void}
-     */
+   * Deliver a message to a topic.
+   * @param {string} topic - The topic to send.
+   * @param {Buffer} content - The content to send.
+   * @returns {void}
+   */
   deliver(topic: string, content: Buffer): void {
     if (!this._channel) throw new Error('Channel is not initialized');
     const correlationId = instanceId;
@@ -104,9 +104,9 @@ class Queue {
   }
 
   /**
-     * Close the queue-layer.
-     * @returns {Promise<void>}
-     */
+   * Close the queue-layer.
+   * @returns {Promise<void>}
+   */
   close(): Promise<void> {
     if (!this._amqpClient) {
       return Promise.resolve();

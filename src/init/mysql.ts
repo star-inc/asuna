@@ -1,18 +1,31 @@
-// Asuna - Tiny microservice framework.
+// Asuna - Tiny and blazing-fast microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-import { getSplitted } from '../config';
-import mysql, {
-  type PoolCluster,
-  type PoolConnection,
-} from 'mysql2/promise';
+// mysql-layer is used for managing MySQL cluster connections.
 
-// Read multiple MySQL cluster configs (comma separated, format: mysql://user:pass@host:port/db)
+// Import modules
+import { getSplitted } from '../config';
+import mysql, { type PoolCluster, type PoolConnection } from 'mysql2/promise';
+
+// Read multiple MySQL cluster configs
+// (comma separated, format: mysql://user:pass@host:port/db)
 const clusterConfigs = getSplitted('MYSQL_CLUSTERS');
 
+/**
+ * Asuna MySQL Cluster.
+ * @class MySQL
+ * The unified MySQL cluster-layer for the application.
+ */
 class MySQL {
+  /**
+   * The PoolCluster instance.
+   * @type {PoolCluster}
+   */
   private _cluster: PoolCluster;
 
+  /**
+   * Construct the MySQL cluster.
+   */
   constructor() {
     this._cluster = mysql.createPoolCluster();
     // Register all cluster configs by URI
@@ -22,7 +35,9 @@ class MySQL {
   }
 
   /**
-   * Get a connection from the specified group
+   * Get a connection from the specified group.
+   * @param {string} [group] - The group name.
+   * @returns {Promise<PoolConnection>} The MySQL connection.
    */
   async getConnection(group?: string): Promise<PoolConnection> {
     if (group) {
@@ -32,7 +47,12 @@ class MySQL {
   }
 
   /**
-   * Execute SQL query (auto get/release connection)
+   * Execute SQL query (auto get/release connection).
+   * @template T
+   * @param {string} sql - The SQL query string.
+   * @param {unknown[]} [params] - The query parameters.
+   * @param {string} [group] - The group name.
+   * @returns {Promise<T[]>} The query result rows.
    */
   async query<T = unknown>(sql: string, params?: unknown[], group?: string): Promise<T[]> {
     const conn = await this.getConnection(group);
@@ -45,7 +65,8 @@ class MySQL {
   }
 
   /**
-   * Close all connection pools
+   * Close all connection pools.
+   * @returns {Promise<void>} Resolves when all pools are closed.
    */
   async close(): Promise<void> {
     await this._cluster.end();
@@ -53,8 +74,9 @@ class MySQL {
 }
 
 /**
- * Composable MySQL cluster
- * @returns {MySQL} MySQL cluster instance
+ * Composable MySQL cluster.
+ * @module src/init/mysql
+ * @returns {MySQL} The MySQL cluster-layer
  */
 export function useMySQL(): MySQL {
   return new MySQL();

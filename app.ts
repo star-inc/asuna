@@ -1,4 +1,4 @@
-// Asuna - Tiny microservice framework.
+// Asuna - Tiny and blazing-fast microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
 import {
