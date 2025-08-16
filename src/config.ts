@@ -45,7 +45,7 @@ export function isProduction() {
  * @throws {Error} If value is undefined, throw an error.
  */
 export function get(key: string): string {
-  const value = process.env[key];
+  const value = Bun.env[key];
   if (value === undefined) {
     throw new Error(`config key ${key} is undefined`);
   }
