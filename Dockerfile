@@ -1,4 +1,4 @@
-# Asuna - Tiny and blazing-fast microservice framework.
+# Asuna - A blazing-fast, progressive microservice framework.
 # SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
 FROM oven/bun:alpine

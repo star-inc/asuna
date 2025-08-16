@@ -2,7 +2,7 @@
   "name": "asuna",
   "private": true,
   "version": "1.0.0",
-  "description": "Tiny and blazing-fast microservice framework.",
+  "description": "A blazing-fast, progressive microservice framework.",
   "author": "Star Inc.",
   "homepage": "https://github.com/star-inc/asuna",
   "repository": "https://github.com/star-inc/asuna",
