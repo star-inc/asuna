@@ -55,4 +55,7 @@ async function execute(): Promise<void> {
 
   // Start the server
   serve({ fetch });
+
+  // Send application ready event
+  process.send?.('ready');
 }
