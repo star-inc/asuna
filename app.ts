@@ -21,11 +21,13 @@ const routerNames: string[] = [
 ];
 
 // Define display
-const displayStatus = () => {
+const displayStatus = (workerPool: Map<string, Worker>) => {
+  const workerUnit = workerPool.size > 1 ? 'workers' : 'worker';
   console.info(APP_NAME);
   console.info('====');
   console.info(APP_DESCRIPTION, '\n');
-  console.info('[Routes loaded]:', routerNames.join(', '));
+  console.info('[Workers Started]:', workerPool.size, workerUnit);
+  console.info('[Routes Loaded]:', routerNames.join(', '));
   console.info('[Startup Time]:', instanceStartupTime, '\n');
   console.info('[Instance ID]:', instanceId);
   console.info('[Instance URL]:', instanceUrl);

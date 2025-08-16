@@ -26,3 +26,6 @@ export const instanceUrl = get('INSTANCE_URL');
 
 // Define instance startup time
 export const instanceStartupTime = new Date();
+
+// Define instance context
+export const instanceContext = new Map();

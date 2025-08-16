@@ -1,20 +1,21 @@
 // Asuna - Tiny and blazing-fast microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-import { serve } from 'bun';
 import {
   type AsunaRegister,
-  rootRouter,
 } from './init/router';
 
 interface Asuna {
     loadRoutes: (routerNames: string[]) => Asuna;
-    execute: () => Promise<void>;
+    execute: () => Promise<Map<string, Worker>>;
 }
 
 interface AsunaRegisterModule {
     default: AsunaRegister;
 }
+
+// Define worker script URL
+export const workerScriptUrl = new URL('./init/worker.ts', import.meta.url);
 
 export function invokeApp(): Asuna {
   return {
@@ -46,16 +47,24 @@ function loadRoutes(routerNames: string[]): Asuna {
   return invokeApp();
 }
 
-async function execute(): Promise<void> {
-  // Get the fetch function from the root router
-  const { fetch } = rootRouter;
-
+async function execute(): Promise<Map<string, Worker>> {
   // Wait for all route registrations to complete
   await Promise.allSettled(pendingPromises);
 
-  // Start the server
-  serve({ fetch });
+  // Setup workers
+  const workerPool = new Map<string, Worker>();
+  const workerCount = navigator.hardwareConcurrency || 1;
+
+  // Startup workers
+  for (let i = 0; i < workerCount; i++) {
+    const workerKey = `worker#${i}`;
+    const worker = new Worker(workerScriptUrl);
+    workerPool.set(workerKey, worker);
+  }
 
   // Send application ready event
   process.send?.('ready');
+
+  // Return worker pool
+  return workerPool;
 }
