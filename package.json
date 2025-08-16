@@ -13,7 +13,8 @@
     "bun": ">=1.2.0"
   },
   "scripts": {
-    "dev": "bun --watch app.ts",
+    "dev": "bun --hot app.ts",
+    "dev:reload": "bun --watch app.ts",
     "start": "bun app.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
