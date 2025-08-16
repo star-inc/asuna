@@ -4,7 +4,7 @@ A blazing-fast, progressive microservice framework.
 
 > If you’re looking for a more feature-rich framework, consider [Elysia](https://elysiajs.com).
 
-![asuna](asuna.min.png)
+![asuna](asuna.og.png)
 
 Asuna is a microservice framework powered by Bun + itty-router that
 provides a tidy, clear project structure to help you deliver services quickly.
@@ -203,5 +203,7 @@ and provide required environment variables (see Configuration section).
 ## License
 
 Asuna is the microservice framework with [BSD-3-Clause licensed](LICENSE).
+
+![asuna](asuna.min.png)
 
 > (c) 2025 [Star Inc.](https://starinc.xyz)
