@@ -5,7 +5,7 @@
 
 export const APP_NAME = 'asuna';
 export const APP_DESCRIPTION =
-    'Tiny microservice framework for blazing-fast development.';
+    'Tiny and blazing-fast microservice framework.';
 
 export const APP_VERSION = 'latest'; // SemVer
 export const LAV_VERSION = '2025.08.12'; // CalVer, UTC +8

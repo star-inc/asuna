@@ -1,6 +1,6 @@
 # Asuna
 
-Tiny microservice framework for blazing-fast development.
+Tiny and blazing-fast microservice framework.
 
 or... [Elysia](https://elysiajs.com)?
 
