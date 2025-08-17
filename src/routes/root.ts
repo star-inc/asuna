@@ -11,9 +11,8 @@ import {
 const register: AsunaRegister = () => {
   // API Index Message
   rootRouter.get('/', async (_req) => {
-    const { readFile } = await import('fs/promises');
     const htmlPath = new URL('../../views/index.html', import.meta.url);
-    const htmlContent = await readFile(htmlPath, 'utf-8');
+    const htmlContent = await Bun.file(htmlPath).text();
     return new Response(htmlContent, {
       status: StatusCodes.OK,
       headers: {
