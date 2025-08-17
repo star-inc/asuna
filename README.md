@@ -25,7 +25,15 @@ Note: Environment variable names follow the current implementation. The message 
 
 ## Get Started
 
-Create a new project by using this repository as a template or cloning it.
+Quick Start:
+
+```bash
+bun create asuna
+```
+
+Alternatively, you can use this repository as a template or clone it to start a new project.
+
+Install dependencies:
 
 ```sh
 bun install
