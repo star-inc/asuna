@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asuna - Progressive Microservice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #f8b4d9, #89cff0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-bg {
+            background-color: #fdf2f8;
+            /* Light pink background */
+            background-image:
+                radial-gradient(circle at 15% 85%, #dbeafe, transparent 30%),
+                radial-gradient(circle at 85% 20%, #fce7f3, transparent 30%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header / Navigation -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="https://placehold.co/200x50/f8b4d9/ffffff?text=Asuna" alt="Asuna Logo" class="h-10 w-auto" />
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/star-inc/asuna"
+                    class="bg-pink-500 text-white px-5 py-2 rounded-full hover:bg-pink-600 transition-transform transform hover:scale-105 shadow-lg">
+                    Get Started
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="hero-bg">
+        <div class="container mx-auto px-6 py-24 text-center">
+            <div class="flex justify-center mb-8">
+                <img src="https://raw.githubusercontent.com/star-inc/asuna/refs/heads/main/asuna.rounded.png"
+                    alt="Asuna Large Icon" class="w-48 h-48 rounded-3xl shadow-2xl" />
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                Welcome to <span class="gradient-text">Asuna</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-10">
+                A modern, easy-to-use progressive microservice framework designed to boost your development efficiency
+                and enjoyment.
+            </p>
+            <div>
+                <a href="https://github.com/star-inc/asuna"
+                    class="bg-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-pink-600 transition-transform transform hover:scale-105 shadow-xl inline-block">
+                    Explore Now
+                </a>
+                <a href="https://github.com/star-inc/asuna"
+                    class="ml-4 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold bg-white hover:bg-gray-100 transition-colors shadow-lg inline-block">
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold">Why Choose Asuna?</h2>
+                <p class="text-gray-500 mt-2">Discover the core features that make Asuna stand out.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-10">
+                <!-- Feature 1 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+                    <div class="text-pink-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Ultimate Performance</h3>
+                    <p class="text-gray-600">Built on the latest tech stack to deliver lightning-fast speed and
+                        low-latency responses.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+                    <div class="text-blue-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Modular Design</h3>
+                    <p class="text-gray-600">Easily extend your application. Choose only the features you need to stay
+                        lightweight.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+                    <div class="text-yellow-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Developer Friendly</h3>
+                    <p class="text-gray-600">With clear documentation and an intuitive API, you'll have a pleasant
+                        development experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                <div>
+                    <img src="https://placehold.co/150x40/ffffff/333333?text=Asuna" alt="Asuna Logo"
+                        class="h-8 w-auto mb-4 md:mb-0 mx-auto md:mx-0" />
+                    <p class="mt-2 text-gray-400">A framework that makes microservice development simple.</p>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <p>&copy; <span id="current-year">2025</span> Star Inc.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Update the current year in the footer
+        const currentYear = new Date().getFullYear();
+        document.getElementById('current-year').textContent = currentYear;
+    </script>
+
+</body>
+
+</html>

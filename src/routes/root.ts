@@ -10,15 +10,12 @@ import {
 // Export asuna register
 const register: AsunaRegister = () => {
   // API Index Message
-  rootRouter.get('/', (_req) => {
-    const meetMessage = `
-        Star Inc. Asuna Framework <br />
-        <a href="https://github.com/star-inc/asuna" target="_blank">
-            https://github.com/star-inc/asuna
-        </a>
-        `;
-    return new Response(meetMessage, {
-      status: StatusCodes.IM_A_TEAPOT,
+  rootRouter.get('/', async (_req) => {
+    const { readFile } = await import('fs/promises');
+    const htmlPath = new URL('../../views/index.html', import.meta.url);
+    const htmlContent = await readFile(htmlPath, 'utf-8');
+    return new Response(htmlContent, {
+      status: StatusCodes.OK,
       headers: {
         'Content-Type': 'text/html',
       },
