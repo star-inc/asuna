@@ -8,21 +8,21 @@ ENV HTTP_HOSTNAME="0.0.0.0"
 ENV RUNTIME_ENV="container"
 
 RUN addgroup \
-        -g 3000 \
-        scarlet
+    -g 3000 \
+    scarlet
 RUN adduser -HD \
-        -u 3000 \
-        -G scarlet \
-        -h /workplace \
-        flandre
+    -u 3000 \
+    -G scarlet \
+    -h /app \
+    flandre
 
-RUN mkdir -p /.bun /workplace
-WORKDIR /workplace
-ADD . /workplace
+RUN mkdir -p /app
+WORKDIR /app
+ADD . /app
 
 RUN chown -R \
-        3000:3000 \
-        /.bun /workplace
+    3000:3000 \
+    /app
 
 USER 3000
 RUN bun install
