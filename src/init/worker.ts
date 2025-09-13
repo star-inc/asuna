@@ -1,25 +1,25 @@
 // Asuna - A blazing-fast, progressive microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-import { serve } from "bun";
+import { serve } from 'bun';
 import {
   rootRouter,
-} from "../init/router.ts";
+} from '../init/router.ts';
 import {
   type AsunaRegister,
 } from '../init/router';
 import {
-    onMessage,
-    setupMessageBox,
-    type Message,
-} from "./instance.ts";
+  type Message,
+  onMessage,
+  setupMessageBox,
+} from './instance.ts';
 
 interface AsunaRegisterModule {
     default: AsunaRegister;
 }
 
 // Declare self
-declare var self: Worker;
+declare let self: Worker;
 
 const pendingPromises: Promise<void>[] = [];
 

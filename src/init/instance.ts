@@ -20,7 +20,7 @@ import {
 
 import {
   EventEmitter,
-} from "events";
+} from 'events';
 
 // Define instance id
 export const instanceId = `${APP_NAME}#${nanoid()}`;

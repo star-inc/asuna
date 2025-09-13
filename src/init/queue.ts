@@ -8,6 +8,7 @@ import { get, getEnabled } from '../config.ts';
 import amqp from 'amqplib';
 
 import {
+  instanceContext,
   instanceId,
 } from './instance.ts';
 
@@ -121,6 +122,11 @@ class Queue {
  * @returns {Promise<Queue>} The queue-layer
  */
 export async function useQueue(): Promise<Queue> {
+  // Return the existing instance if exists
+  if (instanceContext.has('Queue')) {
+    return instanceContext.get('Queue') as Queue;
+  }
+
   // Construct the amqp client
   const client = await amqp.connect(amqpUrl);
 
@@ -128,5 +134,7 @@ export async function useQueue(): Promise<Queue> {
   const channel = await client.createChannel();
 
   // Construct the queue-layer
-  return new Queue(client, channel);
+  const queue = new Queue(client, channel);
+  instanceContext.set('Queue', queue);
+  return queue;
 }

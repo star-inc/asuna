@@ -6,6 +6,7 @@
 // Import modules
 import { getSplitted } from '../config';
 import mysql, { type PoolCluster, type PoolConnection } from 'mysql2/promise';
+import { instanceContext } from './instance';
 
 // Read multiple MySQL cluster configs
 // (comma separated, format: mysql://user:pass@host:port/db)
@@ -79,5 +80,11 @@ class MySQL {
  * @returns {MySQL} The MySQL cluster-layer
  */
 export function useMySQL(): MySQL {
-  return new MySQL();
+  if (instanceContext.has('MySQL')) {
+    return instanceContext.get('MySQL') as MySQL;
+  }
+
+  const mysqlInstance = new MySQL();
+  instanceContext.set('MySQL', mysqlInstance);
+  return mysqlInstance;
 }

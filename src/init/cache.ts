@@ -6,6 +6,7 @@
 // Import modules
 import { get } from '../config';
 import Redis, { Redis as RedisType } from 'ioredis';
+import { instanceContext } from './instance';
 
 // Read configuration
 const redisUrl: string = get('REDIS_URL');
@@ -165,8 +166,15 @@ class Cache {
  * @returns {Cache} The cache-layer
  */
 export function useCache(): Cache {
+  if (instanceContext.has('Cache')) {
+    return instanceContext.get('Cache') as Cache;
+  }
+
   const client = new Redis(redisUrl, {
     keyPrefix: `${redisNamespace}:`,
   });
-  return new Cache(client);
+
+  const cache = new Cache(client);
+  instanceContext.set('Cache', cache);
+  return cache;
 }
