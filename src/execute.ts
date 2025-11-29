@@ -12,7 +12,7 @@ interface Asuna {
 export const workerScriptUrl = new URL('./init/worker.ts', import.meta.url);
 
 // Define worker startup context
-export const workerStartupContext = new Map<string, any>();
+export const workerStartupContext = new Map<string, unknown>();
 
 export function invokeApp(): Asuna {
   return {

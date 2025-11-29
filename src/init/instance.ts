@@ -37,7 +37,7 @@ export const instanceContext = new Map();
 // Define message interface
 export interface Message {
   type: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Define message listener
@@ -50,7 +50,7 @@ const messageBox = new EventEmitter();
 /**
  * Register message box on workers.
  * @module src/init/instance
- * @param {Worker} worker = The worker
+ * @param {Worker} worker - The worker
  * @returns {void}
  */
 export function setupMessageBox(worker: Worker): void {
@@ -78,9 +78,9 @@ export function onMessage(
  * Send message to other instances.
  * @module src/init/instance
  * @param {string} type - The message type.
- * @param  {object} payload - The message payload.
+ * @param  {Record<string, unknown>} payload - The message payload.
  * @returns {Message} The message.
  */
-export function toMessage(type: string, payload: any): Message {
+export function toMessage(type: string, payload: Record<string, unknown>): Message {
   return { type, ...payload };
 }

@@ -34,7 +34,7 @@ class Cache {
 
   /**
    * Get the raw ioredis client.
-   * @returns {Redis} The client.
+   * @returns {RedisType} The client.
    */
   rawClient(): RedisType {
     return this._redisClient;
@@ -43,7 +43,7 @@ class Cache {
   /**
    * Check if a key exists in the cache.
    * @param {string} key - The cache key.
-   * @returns {boolean} True if the key exists, false otherwise.
+   * @returns {Promise<boolean>} True if the key exists, false otherwise.
    */
   async has(key: string): Promise<boolean> {
     const exists = await this._redisClient.exists(key);
@@ -53,7 +53,7 @@ class Cache {
   /**
    * Get a cached value via its key.
    * @param {string} key - The cache key.
-   * @returns {Promise<any>} The cached element.
+   * @returns {Promise<T|null>} The cached element.
    */
   async get<T = unknown>(key: string): Promise<T | null> {
     const value = await this._redisClient.get(key);
@@ -63,7 +63,7 @@ class Cache {
   /**
    * Get multiple cached keys at once.
    * @param {string[]} keys - An array of cache keys.
-   * @returns {Promise<any[]>} An array of cached elements.
+   * @returns {Promise<(T|null)[]>} An array of cached elements.
    */
   async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
     const values = await this._redisClient.mget(...keys);
@@ -73,9 +73,9 @@ class Cache {
   /**
    * Set a cached key with the given value.
    * @param {string} key - The cache key.
-   * @param {any} value - The value to cache.
+   * @param {unknown} value - The value to cache.
    * @param {number} ttl - The time to live for the cache.
-   * @returns {Promise<boolean>} True if the key is set, false otherwise.
+   * @returns {Promise<'OK'>} The result of setting the cache.
    */
   async set(key: string, value: unknown, ttl: number): Promise<'OK'> {
     const strValue = JSON.stringify(value);
@@ -84,8 +84,8 @@ class Cache {
 
   /**
    * Set multiple cached keys with the given values.
-   * @param {object[]} keyValueSet - An array of object.
-   * @returns {Promise<boolean>} True if all keys are set, false otherwise.
+   * @param {object[]} keyValueSet - An array of key-value pairs.
+   * @returns {Promise<'OK'>} The result of setting the cache.
    */
   async mset(keyValueSet: { key: string; value: unknown }[]): Promise<'OK'> {
     const flat: string[] = [];
@@ -97,8 +97,8 @@ class Cache {
 
   /**
    * Delete a cached values via their keys.
-   * @param {string} keys - The cache key.
-   * @returns {Promise<boolean>} True if the key is deleted, false otherwise.
+   * @param {string|string[]} keys - The cache key(s).
+   * @returns {Promise<number>} The number of keys deleted.
    */
   async del(keys: string | string[]): Promise<number> {
     if (Array.isArray(keys)) {
@@ -137,7 +137,7 @@ class Cache {
 
   /**
    * Get cache statistics.
-   * @returns {object[]} An array of cache statistics.
+   * @returns {Promise<string>} An object containing cache statistics.
    */
   async getStats(): Promise<string> {
     return this._redisClient.info();
@@ -145,7 +145,7 @@ class Cache {
 
   /**
    * Flush the whole data and reset the cache.
-   * @returns {Promise<boolean>} true if the cache is flushed.
+   * @returns {Promise<'OK'>} True if the cache is flushed.
    */
   async flushAll(): Promise<'OK'> {
     return this._redisClient.flushall();
@@ -153,7 +153,7 @@ class Cache {
 
   /**
    * This will clear the interval timeout which is set on checkperiod option.
-   * @returns {Promise<boolean>} true if the cache is cleared and closed.
+   * @returns {Promise<'OK'>} True if the cache is cleared and closed.
    */
   async close(): Promise<'OK'> {
     return this._redisClient.quit();
