@@ -44,7 +44,7 @@ function loadRoutes(routerNames: string[]): void {
 async function runWorker(message: Message): Promise<void> {
   // Load routes
   const { routerNames } = message;
-  loadRoutes(routerNames);
+  loadRoutes(routerNames as string[]);
 
   // Wait for all route registrations to complete
   await Promise.allSettled(pendingPromises);
