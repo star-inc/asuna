@@ -62,9 +62,9 @@ Example, a service class:
 ```ts
 // src/services/example.ts
 export default class ExampleService {
-	async getNow(): Promise<number> {
-		return Date.now();
-	}
+ async getNow(): Promise<number> {
+  return Date.now();
+ }
 }
 ```
 
@@ -80,14 +80,14 @@ const service = new ExampleService();
 const router = Router({ base: '/example' });
 
 router.get('/now', async () => {
-	const now = await service.getNow();
-	return new Response(JSON.stringify({ now }), {
-		headers: { 'Content-Type': 'application/json' },
-	});
+ const now = await service.getNow();
+ return new Response(JSON.stringify({ now }), {
+  headers: { 'Content-Type': 'application/json' },
+ });
 });
 
 export default () => {
-	rootRouter.all('/example/*', router.fetch);
+ rootRouter.all('/example/*', router.fetch);
 };
 ```
 
@@ -128,18 +128,18 @@ Asuna reads configuration from `Bun.env`.
 Common environment variables (excerpt):
 
 - Base
-	- `NODE_ENV`: `production` or `development`.
-	- `RUNTIME_ENV`, `INSTANCE_MODE`: optional environment descriptors.
-	- `INSTANCE_URL`: canonical/base URL of this service (required).
+  - `NODE_ENV`: `production` or `development`.
+  - `RUNTIME_ENV`, `INSTANCE_MODE`: optional environment descriptors.
+  - `INSTANCE_URL`: canonical/base URL of this service (required).
 - Cache (Redis/Valkey)
-	- `REDIS_URL`: connection string (required).
-	- `REDIS_NAMESPACE`: key prefix namespace.
+  - `REDIS_URL`: connection string (required).
+  - `REDIS_NAMESPACE`: key prefix namespace.
 - Database (MySQL, multi-cluster)
-	- `MYSQL_CLUSTERS`: comma-separated connection URIs, e.g.
-		`mysql://user:pass@host:3306/db,mysql://user:pass@host2:3306/db`.
+  - `MYSQL_CLUSTERS`: comma-separated connection URIs, e.g.
+  `mysql://user:pass@host:3306/db,mysql://user:pass@host2:3306/db`.
 - Message Queue (RabbitMQ)
-	- `AMPQ_URL`: connection string (required).
-	- `AMPQ_DURABLE`: `yes` for durable queues, anything else is false.
+  - `AMPQ_URL`: connection string (required).
+  - `AMPQ_DURABLE`: `yes` for durable queues, anything else is false.
 
 ## Dependencies
 
@@ -207,6 +207,35 @@ Example to show current POSIX timestamp.
 
 This project includes a `Dockerfile`. Build and run it in your container platform,
 and provide required environment variables (see Configuration section).
+
+## Contribution
+
+Please open an issue to report bugs or request features,
+and submit pull requests for code changes following the repository's branching and review workflow.
+
+Maintain clear PR descriptions and include tests or reproduction steps when possible.
+
+```mermaid
+gitGraph
+    commit id: "Init"
+    branch rolling
+    branch "feature-${issue-id}"
+    branch "bugfix-${issue-id}"
+    
+    checkout "bugfix-${issue-id}"
+    commit id: "Fix-01"
+    
+    checkout "feature-${issue-id}"
+    merge "bugfix-${issue-id}" id: "Merge Fix"
+    commit id: "Feat-01"
+    
+    checkout rolling
+    merge "feature-${issue-id}" id: "Deploy Test"
+    
+    checkout main
+    merge rolling id: "Release"
+    commit tag: "2025.11.29"
+```
 
 ## License
 
