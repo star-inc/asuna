@@ -17,8 +17,7 @@ const amqpUrl = get('AMPQ_URL');
 const amqpDurable = getEnabled('AMPQ_DURABLE');
 
 /**
- * @param {amqp.ConsumeMessage|null} message - The message.
- * @returns {void}
+ * @param message - The message.
  */
 type SubscribeCallback = (message: amqp.ConsumeMessage|null) => void;
 
@@ -98,8 +97,8 @@ class Queue {
   }
 
   /**
-   * Close the queue-layer.
-   * @returns Resolves when the queue-layer is closed.
+   * Close the queue layer.
+   * @returns Resolves when the queue layer is closed.
    */
   close(): Promise<void> {
     if (!this._amqpClient) {
@@ -110,8 +109,8 @@ class Queue {
 }
 
 /**
- * Composable Queue.
- * @returns The queue-layer
+ * Composable queue layer.
+ * @returns The queue layer.
  */
 export async function useQueue(): Promise<Queue> {
   // Return the existing instance if exists

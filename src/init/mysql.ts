@@ -74,7 +74,7 @@ class MySQL {
 
 /**
  * Composable MySQL cluster.
- * @returns The MySQL cluster-layer
+ * @returns The MySQL cluster layer.
  */
 export function useMySQL(): MySQL {
   if (instanceContext.has('MySQL')) {
