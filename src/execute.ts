@@ -14,7 +14,10 @@ export const workerScriptUrl = new URL('./init/worker.ts', import.meta.url);
 // Define worker startup context
 export const workerStartupContext = new Map<string, unknown>();
 
-// Define Asuna cores function
+/**
+ * Determine the number of CPU cores to use.
+ * @returns The number of cores to use.
+ */
 export function asunaCores(): number {
   const envCount = Number(Bun.env.ASUNA_CORES);
 
@@ -25,7 +28,10 @@ export function asunaCores(): number {
   return navigator.hardwareConcurrency || 1;
 }
 
-// Define application invoker
+/**
+ * Invoke the Asuna application.
+ * @returns The Asuna application invoker.
+ */
 export function invokeApp(): Asuna {
   return {
     loadRoutes,
@@ -33,7 +39,11 @@ export function invokeApp(): Asuna {
   };
 }
 
-// Define load routes function
+/**
+ * Load route modules dynamically.
+ * @param routerNames - The names of the routers to load.
+ * @returns The Asuna application invoker.
+ */
 function loadRoutes(routerNames: string[]): Asuna {
   // Set context
   workerStartupContext.set('routerNames', routerNames);
@@ -42,7 +52,10 @@ function loadRoutes(routerNames: string[]): Asuna {
   return invokeApp();
 }
 
-// Define execute function
+/**
+ * Execute the Asuna application by starting worker instances.
+ * @returns A promise that resolves to a map of worker instances.
+ */
 async function execute(): Promise<Map<string, Worker>> {
   // Setup workers
   const workerPool = new Map<string, Worker>();
