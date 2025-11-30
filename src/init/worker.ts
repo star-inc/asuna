@@ -55,7 +55,12 @@ async function runWorker(message: Message): Promise<void> {
   loadRoutes(routerNames as string[]);
 
   // Wait for all route registrations to complete
-  await Promise.allSettled(pendingPromises);
+  const results = await Promise.allSettled(pendingPromises);
+  results.forEach((result) => {
+    if (result.status === 'rejected') {
+      console.warn('Route registration failed:', result.reason);
+    }
+  });
 
   // Get the fetch function from the root router
   const { fetch } = rootRouter;
