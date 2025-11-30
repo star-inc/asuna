@@ -14,13 +14,11 @@ const clusterConfigs = getSplitted('MYSQL_CLUSTERS');
 
 /**
  * Asuna MySQL Cluster.
- * @class MySQL
  * The unified MySQL cluster-layer for the application.
  */
 class MySQL {
   /**
    * The PoolCluster instance.
-   * @type {PoolCluster}
    */
   private _cluster: PoolCluster;
 
@@ -37,8 +35,8 @@ class MySQL {
 
   /**
    * Get a connection from the specified group.
-   * @param {string} [group] - The group name.
-   * @returns {Promise<PoolConnection>} The MySQL connection.
+   * @param [group] - The group name.
+   * @returns The MySQL connection.
    */
   async getConnection(group?: string): Promise<PoolConnection> {
     if (group) {
@@ -50,10 +48,10 @@ class MySQL {
   /**
    * Execute SQL query (auto get/release connection).
    * @template T
-   * @param {string} sql - The SQL query string.
-   * @param {unknown[]} [params] - The query parameters.
-   * @param {string} [group] - The group name.
-   * @returns {Promise<T[]>} The query result rows.
+   * @param sql - The SQL query string.
+   * @param [params] - The query parameters.
+   * @param [group] - The group name.
+   * @returns The query result rows.
    */
   async query<T = unknown>(sql: string, params?: unknown[], group?: string): Promise<T[]> {
     const conn = await this.getConnection(group);
@@ -67,7 +65,7 @@ class MySQL {
 
   /**
    * Close all connection pools.
-   * @returns {Promise<void>} Resolves when all pools are closed.
+   * @returns Resolves when all pools are closed.
    */
   async close(): Promise<void> {
     await this._cluster.end();
@@ -76,8 +74,7 @@ class MySQL {
 
 /**
  * Composable MySQL cluster.
- * @module src/init/mysql
- * @returns {MySQL} The MySQL cluster-layer
+ * @returns The MySQL cluster-layer
  */
 export function useMySQL(): MySQL {
   if (instanceContext.has('MySQL')) {

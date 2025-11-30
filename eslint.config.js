@@ -24,8 +24,8 @@ export default tseslint.config(
 
       // General code style rules
       'prefer-const': 'error',
-      'indent': ['error', 4],
-      'quotes': ['error', 'double'],
+      'indent': ['error', 2],
+      'quotes': ['error', 'single'],
       'semi': ['error', 'always'],
       'comma-dangle': ['error', 'always-multiline'],
       'no-trailing-spaces': 'error',
