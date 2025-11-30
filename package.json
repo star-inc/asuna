@@ -8,9 +8,17 @@
   "repository": "https://github.com/star-inc/asuna",
   "license": "BSD-3-Clause",
   "type": "module",
-  "main": "app.mjs",
+  "main": "app.ts",
   "engines": {
     "bun": ">=1.2.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint"
   },
   "scripts": {
     "dev": "bun --hot app.ts",
@@ -18,12 +26,20 @@
     "start": "bun app.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:check": "eslint . --max-warnings 0"
+    "lint:check": "eslint . --max-warnings 0",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
     "@eslint/js": "^9.33.0",
     "@types/bun": "latest",
-    "eslint": "^9.33.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "9.39.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-jsdoc": "^61.4.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
     "typescript-eslint": "^8.39.1"
   },
   "peerDependencies": {

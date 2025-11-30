@@ -3,8 +3,7 @@
 
 /**
  * Get the current NODE_ENV value.
- * @module src/config
- * @returns {string} The NODE_ENV value.
+ * @returns The NODE_ENV value.
  */
 export function getNodeEnv() {
   return get('NODE_ENV');
@@ -12,8 +11,7 @@ export function getNodeEnv() {
 
 /**
  * Get the current RUNTIME_ENV value.
- * @module src/config
- * @returns {string} The RUNTIME_ENV value.
+ * @returns The RUNTIME_ENV value.
  */
 export function getRuntimeEnv() {
   return get('RUNTIME_ENV');
@@ -21,8 +19,7 @@ export function getRuntimeEnv() {
 
 /**
  * Get the current INSTANCE_MODE value.
- * @module src/config
- * @returns {string} The INSTANCE_MODE value.
+ * @returns The INSTANCE_MODE value.
  */
 export function getInstanceMode() {
   return get('INSTANCE_MODE');
@@ -30,8 +27,7 @@ export function getInstanceMode() {
 
 /**
  * Check is production mode.
- * @module src/config
- * @returns {boolean} True if it's production.
+ * @returns True if it's production.
  */
 export function isProduction() {
   return getNodeEnv() === 'production';
@@ -39,9 +35,8 @@ export function isProduction() {
 
 /**
  * Get the value from config or with an error thrown.
- * @module src/config
- * @param {string} key - The config key.
- * @returns {string} The config value.
+ * @param key - The config key.
+ * @returns The config value.
  * @throws {Error} If value is undefined, throw an error.
  */
 export function get(key: string): string {
@@ -57,9 +52,8 @@ export function get(key: string): string {
 
 /**
  * Get the bool value from config, if yes, returns true.
- * @module src/config
- * @param {string} key - The config key.
- * @returns {boolean} The boolean value.
+ * @param key - The config key.
+ * @returns The boolean value.
  */
 export function getEnabled(key: string): boolean {
   return get(key) === 'yes';
@@ -67,10 +61,9 @@ export function getEnabled(key: string): boolean {
 
 /**
  * Get the array value from config.
- * @module src/config
- * @param {string} key - The config key.
- * @param {string} [separator] - The separator.
- * @returns {string[]} The array value.
+ * @param key - The config key.
+ * @param [separator] - The separator.
+ * @returns The array value.
  */
 export function getSplitted(key: string, separator: string = ','): string[] {
   return get(key).

@@ -14,19 +14,18 @@ const redisNamespace: string = get('REDIS_NAMESPACE');
 
 /**
  * Asuna Cache.
- * @class Cache
+ * Cache
  * The unified cache-layer for the application.
  */
 class Cache {
   /**
    * The redis instance.
-   * @type {Redis|undefined}
    */
   private _redisClient: RedisType;
 
   /**
    * The Asuna cache instance.
-   * @param {Redis} client - The cache client.
+   * @param client - The cache client.
    */
   constructor(client: RedisType) {
     this._redisClient = client;
@@ -34,7 +33,7 @@ class Cache {
 
   /**
    * Get the raw ioredis client.
-   * @returns {RedisType} The client.
+   * @returns The client.
    */
   rawClient(): RedisType {
     return this._redisClient;
@@ -42,8 +41,8 @@ class Cache {
 
   /**
    * Check if a key exists in the cache.
-   * @param {string} key - The cache key.
-   * @returns {Promise<boolean>} True if the key exists, false otherwise.
+   * @param key - The cache key.
+   * @returns True if the key exists, false otherwise.
    */
   async has(key: string): Promise<boolean> {
     const exists = await this._redisClient.exists(key);
@@ -52,8 +51,8 @@ class Cache {
 
   /**
    * Get a cached value via its key.
-   * @param {string} key - The cache key.
-   * @returns {Promise<T|null>} The cached element.
+   * @param key - The cache key.
+   * @returns The cached element.
    */
   async get<T = unknown>(key: string): Promise<T | null> {
     const value = await this._redisClient.get(key);
@@ -62,8 +61,8 @@ class Cache {
 
   /**
    * Get multiple cached keys at once.
-   * @param {string[]} keys - An array of cache keys.
-   * @returns {Promise<(T|null)[]>} An array of cached elements.
+   * @param keys - An array of cache keys.
+   * @returns An array of cached elements.
    */
   async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
     const values = await this._redisClient.mget(...keys);
@@ -72,10 +71,10 @@ class Cache {
 
   /**
    * Set a cached key with the given value.
-   * @param {string} key - The cache key.
-   * @param {unknown} value - The value to cache.
-   * @param {number} ttl - The time to live for the cache.
-   * @returns {Promise<'OK'>} The result of setting the cache.
+   * @param key - The cache key.
+   * @param value - The value to cache.
+   * @param ttl - The time to live for the cache.
+   * @returns The result of setting the cache.
    */
   async set(key: string, value: unknown, ttl: number): Promise<'OK'> {
     const strValue = JSON.stringify(value);
@@ -84,8 +83,8 @@ class Cache {
 
   /**
    * Set multiple cached keys with the given values.
-   * @param {object[]} keyValueSet - An array of key-value pairs.
-   * @returns {Promise<'OK'>} The result of setting the cache.
+   * @param keyValueSet - An array of key-value pairs.
+   * @returns The result of setting the cache.
    */
   async mset(keyValueSet: { key: string; value: unknown }[]): Promise<'OK'> {
     const flat: string[] = [];
@@ -97,8 +96,8 @@ class Cache {
 
   /**
    * Delete a cached values via their keys.
-   * @param {string|string[]} keys - The cache key(s).
-   * @returns {Promise<number>} The number of keys deleted.
+   * @param keys - The cache key(s).
+   * @returns The number of keys deleted.
    */
   async del(keys: string | string[]): Promise<number> {
     if (Array.isArray(keys)) {
@@ -109,9 +108,9 @@ class Cache {
 
   /**
    * Set a key's time to live in seconds.
-   * @param {string} key - The cache key.
-   * @param {number} ttl - The time to live for the cache.
-   * @returns {Promise<boolean>} True if the key is set, false otherwise.
+   * @param key - The cache key.
+   * @param ttl - The time to live for the cache.
+   * @returns True if the key is set, false otherwise.
    */
   async ttl(key: string, ttl: number): Promise<boolean> {
     const result = await this._redisClient.expire(key, ttl);
@@ -120,8 +119,8 @@ class Cache {
 
   /**
    * Get the time to live (TTL) of a cached value.
-   * @param {string} key - The cache key.
-   * @returns {Promise<number>} The TTL in seconds.
+   * @param key - The cache key.
+   * @returns The TTL in seconds.
    */
   async getTTL(key: string): Promise<number> {
     return this._redisClient.ttl(key);
@@ -129,7 +128,7 @@ class Cache {
 
   /**
    * List all keys within this cache
-   * @returns {Promise<string[]>} An array of all keys.
+   * @returns An array of all keys.
    */
   async keys(): Promise<string[]> {
     return this._redisClient.keys('*');
@@ -137,7 +136,7 @@ class Cache {
 
   /**
    * Get cache statistics.
-   * @returns {Promise<string>} An object containing cache statistics.
+   * @returns An object containing cache statistics.
    */
   async getStats(): Promise<string> {
     return this._redisClient.info();
@@ -145,7 +144,7 @@ class Cache {
 
   /**
    * Flush the whole data and reset the cache.
-   * @returns {Promise<'OK'>} True if the cache is flushed.
+   * @returns True if the cache is flushed.
    */
   async flushAll(): Promise<'OK'> {
     return this._redisClient.flushall();
@@ -153,7 +152,7 @@ class Cache {
 
   /**
    * This will clear the interval timeout which is set on checkperiod option.
-   * @returns {Promise<'OK'>} True if the cache is cleared and closed.
+   * @returns True if the cache is cleared and closed.
    */
   async close(): Promise<'OK'> {
     return this._redisClient.quit();
@@ -162,8 +161,7 @@ class Cache {
 
 /**
  * Composable cache.
- * @module src/init/cache
- * @returns {Cache} The cache-layer
+ * @returns The cache-layer
  */
 export function useCache(): Cache {
   if (instanceContext.has('Cache')) {

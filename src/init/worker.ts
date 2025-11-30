@@ -23,6 +23,10 @@ declare let self: Worker;
 
 const pendingPromises: Promise<void>[] = [];
 
+/**
+ * Load route modules dynamically.
+ * @param routerNames - The names of the routers to load.
+ */
 function loadRoutes(routerNames: string[]): void {
   // Map route names to their file URLs
   const routeDirectory = new URL('../routes/', import.meta.url);
@@ -41,6 +45,10 @@ function loadRoutes(routerNames: string[]): void {
   ));
 }
 
+/**
+ * Run the worker server.
+ * @param message - The startup message containing router names.
+ */
 async function runWorker(message: Message): Promise<void> {
   // Load routes
   const { routerNames } = message;

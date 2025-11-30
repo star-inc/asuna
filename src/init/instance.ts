@@ -49,9 +49,7 @@ const messageBox = new EventEmitter();
 
 /**
  * Register message box on workers.
- * @module src/init/instance
- * @param {Worker} worker - The worker
- * @returns {void}
+ * @param worker - The worker
  */
 export function setupMessageBox(worker: Worker): void {
   worker.onmessage = (event: MessageEvent) => {
@@ -62,10 +60,8 @@ export function setupMessageBox(worker: Worker): void {
 
 /**
  * Register message listener.
- * @module src/init/instance
- * @param {string} type - The message type.
- * @param {MessageListener} listener - The message listener.
- * @returns {void}
+ * @param type - The message type.
+ * @param listener - The message listener.
  */
 export function onMessage(
   type: string,
@@ -76,10 +72,9 @@ export function onMessage(
 
 /**
  * Send message to other instances.
- * @module src/init/instance
- * @param {string} type - The message type.
- * @param  {Record<string, unknown>} payload - The message payload.
- * @returns {Message} The message.
+ * @param type - The message type.
+ * @param payload - The message payload.
+ * @returns The message.
  */
 export function toMessage(type: string, payload: Record<string, unknown>): Message {
   return { type, ...payload };

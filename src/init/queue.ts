@@ -17,7 +17,6 @@ const amqpUrl = get('AMPQ_URL');
 const amqpDurable = getEnabled('AMPQ_DURABLE');
 
 /**
- * @callback SubscribeCallback
  * @param {amqp.ConsumeMessage|null} message - The message.
  * @returns {void}
  */
@@ -25,26 +24,23 @@ type SubscribeCallback = (message: amqp.ConsumeMessage|null) => void;
 
 /**
  * Asuna Queue.
- * @class Queue
  * The unified queue-layer for the application.
  */
 class Queue {
   /**
    * The amqp instance.
-   * @type {amqp.ChannelModel|undefined}
    */
   _amqpClient: amqp.ChannelModel|undefined;
 
   /**
    * The amqp channel instance.
-   * @type {amqp.Channel|undefined}
    */
   _channel: amqp.Channel|undefined;
 
   /**
    * The Asuna queue instance.
-   * @param {amqp.ChannelModel} client - The queue client.
-   * @param {amqp.Channel} channel - The queue channel.
+   * @param client - The queue client.
+   * @param channel - The queue channel.
    */
   constructor(client: amqp.ChannelModel, channel: amqp.Channel) {
     this._amqpClient = client;
@@ -53,7 +49,7 @@ class Queue {
 
   /**
    * Get the raw amqplib client.
-   * @returns {amqp.ChannelModel|undefined} The client.
+   * @returns The client.
    */
   rawClient(): amqp.ChannelModel|undefined {
     return this._amqpClient;
@@ -61,7 +57,7 @@ class Queue {
 
   /**
    * Get the raw amqplib channel.
-   * @returns {amqp.Channel|undefined} The channel.
+   * @returns The channel.
    */
   rawChannel(): amqp.Channel|undefined {
     return this._channel;
@@ -69,9 +65,8 @@ class Queue {
 
   /**
    * Subscribe to a topic.
-   * @param {string} topic - The topic to subscribe.
-   * @param {SubscribeCallback} callback - The callback function.
-   * @returns {void}
+   * @param topic - The topic to subscribe.
+   * @param callback - The callback function.
    */
   subscribe(topic: string, callback: SubscribeCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
@@ -81,9 +76,8 @@ class Queue {
 
   /**
    * Receive a message from a topic.
-   * @param {string} topic - The topic to receive.
-   * @param {SubscribeCallback} callback - The callback function.
-   * @returns {void}
+   * @param topic - The topic to receive.
+   * @param callback - The callback function.
    */
   receive(topic: string, callback: SubscribeCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
@@ -93,9 +87,8 @@ class Queue {
 
   /**
    * Deliver a message to a topic.
-   * @param {string} topic - The topic to send.
-   * @param {Buffer} content - The content to send.
-   * @returns {void}
+   * @param topic - The topic to send.
+   * @param content - The content to send.
    */
   deliver(topic: string, content: Buffer): void {
     if (!this._channel) throw new Error('Channel is not initialized');
@@ -106,7 +99,7 @@ class Queue {
 
   /**
    * Close the queue-layer.
-   * @returns {Promise<void>}
+   * @returns Resolves when the queue-layer is closed.
    */
   close(): Promise<void> {
     if (!this._amqpClient) {
@@ -118,8 +111,7 @@ class Queue {
 
 /**
  * Composable Queue.
- * @module src/init/queue
- * @returns {Promise<Queue>} The queue-layer
+ * @returns The queue-layer
  */
 export async function useQueue(): Promise<Queue> {
   // Return the existing instance if exists
