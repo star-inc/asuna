@@ -1,7 +1,7 @@
 // Asuna - A blazing-fast, progressive microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-// cache-layer is used for as an in-memory cache.
+// cache-layer is used as an in-memory cache.
 
 // Import modules
 import { get } from '../config';
@@ -14,7 +14,6 @@ const redisNamespace: string = get('REDIS_NAMESPACE');
 
 /**
  * Asuna Cache.
- * Cache
  * The unified cache-layer for the application.
  */
 class Cache {
@@ -95,7 +94,7 @@ class Cache {
   }
 
   /**
-   * Delete a cached values via their keys.
+   * Delete cached values via their keys.
    * @param keys - The cache key(s).
    * @returns The number of keys deleted.
    */
@@ -127,7 +126,7 @@ class Cache {
   }
 
   /**
-   * List all keys within this cache
+   * List all keys within the cache.
    * @returns An array of all keys.
    */
   async keys(): Promise<string[]> {
@@ -151,8 +150,8 @@ class Cache {
   }
 
   /**
-   * This will clear the interval timeout which is set on checkperiod option.
-   * @returns True if the cache is cleared and closed.
+   * Close the cache connection and clean up resources.
+   * @returns Resolves when the cache is closed.
    */
   async close(): Promise<'OK'> {
     return this._redisClient.quit();
@@ -161,7 +160,7 @@ class Cache {
 
 /**
  * Composable cache.
- * @returns The cache-layer
+ * @returns The cache layer.
  */
 export function useCache(): Cache {
   if (instanceContext.has('Cache')) {
