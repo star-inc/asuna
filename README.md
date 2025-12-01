@@ -129,7 +129,7 @@ Common environment variables (excerpt):
 
 - Base
   - `NODE_ENV`: `production` or `development`.
-  - `RUNTIME_ENV`, `INSTANCE_MODE`: optional environment descriptors.
+  - `RUNTIME_ENV`: optional environment descriptor.
   - `INSTANCE_URL`: canonical/base URL of this service (required).
 - Cache (Redis/Valkey)
   - `REDIS_URL`: connection string (required).

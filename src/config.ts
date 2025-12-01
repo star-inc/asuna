@@ -6,7 +6,7 @@
  * @returns The NODE_ENV value.
  */
 export function getNodeEnv() {
-  return get('NODE_ENV');
+  return Bun.env['NODE_ENV'] || 'development';
 }
 
 /**
@@ -14,15 +14,7 @@ export function getNodeEnv() {
  * @returns The RUNTIME_ENV value.
  */
 export function getRuntimeEnv() {
-  return get('RUNTIME_ENV');
-}
-
-/**
- * Get the current INSTANCE_MODE value.
- * @returns The INSTANCE_MODE value.
- */
-export function getInstanceMode() {
-  return get('INSTANCE_MODE');
+  return Bun.env['RUNTIME_ENV'] || 'native';
 }
 
 /**
