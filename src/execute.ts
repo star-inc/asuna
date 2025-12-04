@@ -1,10 +1,24 @@
 // Asuna - A blazing-fast, progressive microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-import { toMessage } from './init/instance';
+import {
+  onExit,
+  setupWorkerPool,
+  toMessage,
+} from './init/instance';
 
-interface Asuna {
+/**
+ * @returns {Promise<void>|void}
+ */
+export type VoidCallback = () => Promise<void> | void;
+
+/**
+ * Asuna application invoker interface.
+ */
+export interface Asuna {
     loadRoutes: (routerNames: string[]) => Asuna;
+    loadInits: (initHandlers: VoidCallback[]) => Asuna;
+    loadExits: (exitHandlers: VoidCallback[]) => Asuna;
     execute: () => Promise<Map<string, Worker>>;
 }
 
@@ -35,6 +49,8 @@ export function asunaCores(): number {
 export function invokeApp(): Asuna {
   return {
     loadRoutes,
+    loadInits,
+    loadExits,
     execute,
   };
 }
@@ -52,11 +68,49 @@ function loadRoutes(routerNames: string[]): Asuna {
   return invokeApp();
 }
 
+// Define initial promises
+const initPromises: Promise<void>[] = [];
+
+/**
+ * Load init application handlers on primary process.
+ * @param initHandlers - The init signal handlers.
+ * @returns The Asuna application invoker.
+ */
+function loadInits(initHandlers: VoidCallback[]): Asuna {
+  // Handle init signals
+  const promises = initHandlers.map((f) => {
+    const result = f();
+    return result instanceof Promise ? result : Promise.resolve();
+  });
+
+  // Push the initial handlers onto the preparing promises
+  initPromises.push(...promises);
+
+  // Return application invoker
+  return invokeApp();
+}
+
+/**
+ * Load exit signal handlers on primary process.
+ * @param exitHandlers - The exit signal handlers.
+ * @returns The Asuna application invoker.
+ */
+function loadExits(exitHandlers: VoidCallback[]): Asuna {
+  // Register exit handlers
+  exitHandlers.forEach((handler) => onExit(handler));
+
+  // Return application invoker
+  return invokeApp();
+}
+
 /**
  * Execute the Asuna application by starting worker instances.
  * @returns A promise that resolves to a map of worker instances.
  */
 async function execute(): Promise<Map<string, Worker>> {
+  // Wait for all init promises resolved
+  await Promise.all(initPromises);
+
   // Setup workers
   const workerPool = new Map<string, Worker>();
   const workerCount = asunaCores();
@@ -72,6 +126,9 @@ async function execute(): Promise<Map<string, Worker>> {
     ));
     workerPool.set(workerKey, worker);
   }
+
+  // Setup worker pool for graceful shutdown
+  setupWorkerPool(workerPool);
 
   // Send application ready event
   process.send?.('ready');

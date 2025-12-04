@@ -12,6 +12,7 @@ import {
   type Message,
   onMessage,
   setupMessageBox,
+  setupProcess,
 } from './instance.ts';
 
 interface AsunaRegisterModule {
@@ -71,6 +72,9 @@ async function runWorker(message: Message): Promise<void> {
 
 // Setup message box
 setupMessageBox(self);
+
+// Setup process with worker self reference
+setupProcess(self);
 
 // Start the server
 onMessage('startup', runWorker);

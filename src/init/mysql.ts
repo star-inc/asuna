@@ -6,7 +6,11 @@
 // Import modules
 import { getSplitted } from '../config';
 import mysql, { type PoolCluster, type PoolConnection } from 'mysql2/promise';
-import { instanceContext } from './instance';
+import {
+  addInstanceConnection,
+  type InstanceConnection,
+  instanceContext,
+} from './instance';
 
 // Read multiple MySQL cluster configs
 // (comma separated, format: mysql://user:pass@host:port/db)
@@ -16,7 +20,7 @@ const clusterConfigs = getSplitted('MYSQL_CLUSTERS');
  * Asuna MySQL Cluster.
  * The unified MySQL cluster-layer for the application.
  */
-class MySQL {
+class MySQL implements InstanceConnection {
   /**
    * The PoolCluster instance.
    */
@@ -82,6 +86,7 @@ export function useMySQL(): MySQL {
   }
 
   const mysqlInstance = new MySQL();
+  addInstanceConnection(mysqlInstance);
   instanceContext.set('MySQL', mysqlInstance);
   return mysqlInstance;
 }
