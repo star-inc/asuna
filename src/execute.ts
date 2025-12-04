@@ -3,6 +3,7 @@
 
 import {
   onExit,
+  setupWorkerPool,
   toMessage,
 } from './init/instance';
 
@@ -125,6 +126,9 @@ async function execute(): Promise<Map<string, Worker>> {
     ));
     workerPool.set(workerKey, worker);
   }
+
+  // Setup worker pool for graceful shutdown
+  setupWorkerPool(workerPool);
 
   // Send application ready event
   process.send?.('ready');

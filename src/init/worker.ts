@@ -73,8 +73,8 @@ async function runWorker(message: Message): Promise<void> {
 // Setup message box
 setupMessageBox(self);
 
-// Setup process
-setupProcess();
+// Setup process with worker self reference
+setupProcess(self);
 
 // Start the server
 onMessage('startup', runWorker);
