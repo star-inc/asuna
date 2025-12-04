@@ -3,10 +3,20 @@
 
 import { toMessage } from './init/instance';
 
-interface Asuna {
+/**
+ * Asuna application invoker interface.
+ */
+export interface Asuna {
     loadRoutes: (routerNames: string[]) => Asuna;
+    loadInits: (initHandlers: VoidCallback[]) => Asuna;
+    loadExits: (exitHandlers: VoidCallback[]) => Asuna;
     execute: () => Promise<Map<string, Worker>>;
 }
+
+/**
+ * @returns {Promise<void>|void}
+ */
+export type VoidCallback = () => Promise<void> | void;
 
 // Define worker script URL
 export const workerScriptUrl = new URL('./init/worker.ts', import.meta.url);
@@ -35,6 +45,8 @@ export function asunaCores(): number {
 export function invokeApp(): Asuna {
   return {
     loadRoutes,
+    loadInits,
+    loadExits,
     execute,
   };
 }
@@ -52,11 +64,69 @@ function loadRoutes(routerNames: string[]): Asuna {
   return invokeApp();
 }
 
+// Define initial promises
+const initPromises: Promise<void>[] = [];
+
+/**
+ * Load init application handlers.
+ * @param initHandlers - The init signal handlers.
+ * @returns The Asuna application invoker.
+ */
+function loadInits(initHandlers: VoidCallback[]): Asuna {
+  // Handle init signals
+  const promises = initHandlers.map((f) => {
+    const result = f();
+    return result instanceof Promise ? result : Promise.resolve();
+  });
+
+  // Push the initial handlers onto the preparing promises
+  initPromises.push(...promises);
+
+  // Return application invoker
+  return invokeApp();
+}
+
+/**
+ * Load exit signal handlers.
+ * @param exitHandlers - The exit signal handlers.
+ * @returns The Asuna application invoker.
+ */
+function loadExits(exitHandlers: VoidCallback[]): Asuna {
+  // Handle exit signals
+  const exitHandler = async () => {
+    const promises = exitHandlers.map((f) => f());
+    // Wait for all exit handlers resolved
+    await Promise.all(promises);
+    // Send exit signal
+    process.exit(0);
+  };
+
+  // Define exit signals
+  const exitSignals = [
+    'SIGINT',
+    'SIGTERM',
+  ];
+
+  // Attach exit handlers
+  exitSignals.forEach((signal) => {
+    process.on(signal, () => {
+      console.info(`\n[${signal}] Shutting down gracefully...`);
+      exitHandler();
+    });
+  });
+
+  // Return application invoker
+  return invokeApp();
+}
+
 /**
  * Execute the Asuna application by starting worker instances.
  * @returns A promise that resolves to a map of worker instances.
  */
 async function execute(): Promise<Map<string, Worker>> {
+  // Wait for all init promises resolved
+  await Promise.all(initPromises);
+
   // Setup workers
   const workerPool = new Map<string, Worker>();
   const workerCount = asunaCores();
