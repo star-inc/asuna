@@ -146,19 +146,32 @@ const exitSignals = [
   'SIGTERM',
 ];
 
-// Attach exit handlers
-exitSignals.forEach((signal) => {
-  process.on(signal, async () => {
-    // Get exit handlers from pool
-    const exitHandlers = instanceContext.get('ExitHandlers') as ExitCallback[] || [];
-    const promises = exitHandlers.map((f) => f());
-    // Wait for all exit handlers resolved
-    await Promise.allSettled(promises);
-    // Close all instance connections
-    await closeInstanceConnections();
-    // Log shutdown message
-    console.info(`\n[${signal}] Shutting down gracefully...`);
-    // Send exit signal
-    process.exit(0);
+// Define exit handler
+const exitHandler = (signal: string) => async () => {
+  // Get exit handlers from pool
+  const exitHandlers = instanceContext.get('ExitHandlers') as ExitCallback[] || [];
+  const promises = exitHandlers.map((f) => f());
+  // Wait for all exit handlers resolved
+  const results = await Promise.allSettled(promises);
+  results.forEach((result) => {
+    if (result.status === 'rejected') {
+      console.error(`[Exit Handler Error] ${result.reason}`);
+    }
   });
-});
+  // Close all instance connections
+  await closeInstanceConnections();
+  // Log shutdown message
+  console.info(`\n[${signal}] Shutting down gracefully...`);
+  // Send exit signal
+  process.exit(0);
+};
+
+/**
+ * Setup process initialization either for primary or worker instance.
+ */
+export function setupProcess(): void {
+  // Attach exit handlers
+  exitSignals.forEach((signal) => {
+    process.on(signal, exitHandler(signal));
+  });
+}
