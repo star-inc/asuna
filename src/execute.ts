@@ -1,7 +1,15 @@
 // Asuna - A blazing-fast, progressive microservice framework.
 // SPDX-License-Identifier: BSD-3-Clause (https://ncurl.xyz/s/mI23sevHR)
 
-import { toMessage } from './init/instance';
+import {
+  onExit,
+  toMessage,
+} from './init/instance';
+
+/**
+ * @returns {Promise<void>|void}
+ */
+export type VoidCallback = () => Promise<void> | void;
 
 /**
  * Asuna application invoker interface.
@@ -12,11 +20,6 @@ export interface Asuna {
     loadExits: (exitHandlers: VoidCallback[]) => Asuna;
     execute: () => Promise<Map<string, Worker>>;
 }
-
-/**
- * @returns {Promise<void>|void}
- */
-export type VoidCallback = () => Promise<void> | void;
 
 // Define worker script URL
 export const workerScriptUrl = new URL('./init/worker.ts', import.meta.url);
@@ -68,7 +71,7 @@ function loadRoutes(routerNames: string[]): Asuna {
 const initPromises: Promise<void>[] = [];
 
 /**
- * Load init application handlers.
+ * Load init application handlers on primary process.
  * @param initHandlers - The init signal handlers.
  * @returns The Asuna application invoker.
  */
@@ -87,33 +90,13 @@ function loadInits(initHandlers: VoidCallback[]): Asuna {
 }
 
 /**
- * Load exit signal handlers.
+ * Load exit signal handlers on primary process.
  * @param exitHandlers - The exit signal handlers.
  * @returns The Asuna application invoker.
  */
 function loadExits(exitHandlers: VoidCallback[]): Asuna {
-  // Handle exit signals
-  const exitHandler = async () => {
-    const promises = exitHandlers.map((f) => f());
-    // Wait for all exit handlers resolved
-    await Promise.all(promises);
-    // Send exit signal
-    process.exit(0);
-  };
-
-  // Define exit signals
-  const exitSignals = [
-    'SIGINT',
-    'SIGTERM',
-  ];
-
-  // Attach exit handlers
-  exitSignals.forEach((signal) => {
-    process.on(signal, () => {
-      console.info(`\n[${signal}] Shutting down gracefully...`);
-      exitHandler();
-    });
-  });
+  // Register exit handlers
+  exitHandlers.forEach((handler) => onExit(handler));
 
   // Return application invoker
   return invokeApp();

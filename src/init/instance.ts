@@ -32,7 +32,67 @@ export const instanceUrl = get('INSTANCE_URL');
 export const instanceStartupTime = new Date();
 
 // Define instance context
-export const instanceContext = new Map();
+export const instanceContext = new Map<string, unknown>();
+
+// Define instance connection interface
+export interface InstanceConnection {
+  close(): Promise<void>;
+}
+
+/**
+ * Add instance connection to pool
+ * @param connection - The instance connection
+ */
+export function addInstanceConnection(connection: InstanceConnection): void {
+  if (!instanceContext.has('ConnectionPool')) {
+    instanceContext.set('ConnectionPool', []);
+  }
+  const pool = instanceContext.get('ConnectionPool') as unknown[];
+  pool.push(connection);
+}
+
+// Define init callback type
+export type InitCallback = () => Promise<void> | void;
+
+/**
+ * Add init handler to pool
+ * @param handler - The init handler
+ */
+export function onInit(handler: InitCallback): void {
+  if (!instanceContext.has('InitHandlers')) {
+    instanceContext.set('InitHandlers', []);
+  }
+  const pool = instanceContext.get('InitHandlers') as InitCallback[];
+  pool.push(handler);
+}
+
+// Define exit callback type
+export type ExitCallback = () => Promise<void> | void;
+
+/**
+ * Add exit handler to pool
+ * @param handler - The exit handler
+ */
+export function onExit(handler: ExitCallback): void {
+  if (!instanceContext.has('ExitHandlers')) {
+    instanceContext.set('ExitHandlers', []);
+  }
+  const pool = instanceContext.get('ExitHandlers') as ExitCallback[];
+  pool.push(handler);
+}
+
+/**
+ * Close all instance connections
+ */
+export async function closeInstanceConnections(): Promise<void> {
+  if (!instanceContext.has('ConnectionPool')) {
+    return;
+  }
+  const pool = instanceContext.get('ConnectionPool') as InstanceConnection[];
+  for (const connection of pool) {
+    await connection.close();
+  }
+};
 
 // Define message interface
 export interface Message {
@@ -79,3 +139,26 @@ export function onMessage(
 export function toMessage(type: string, payload: Record<string, unknown>): Message {
   return { type, ...payload };
 }
+
+// Define exit signals
+const exitSignals = [
+  'SIGINT',
+  'SIGTERM',
+];
+
+// Attach exit handlers
+exitSignals.forEach((signal) => {
+  process.on(signal, async () => {
+    // Get exit handlers from pool
+    const exitHandlers = instanceContext.get('ExitHandlers') as ExitCallback[] || [];
+    const promises = exitHandlers.map((f) => f());
+    // Wait for all exit handlers resolved
+    await Promise.allSettled(promises);
+    // Close all instance connections
+    await closeInstanceConnections();
+    // Log shutdown message
+    console.info(`\n[${signal}] Shutting down gracefully...`);
+    // Send exit signal
+    process.exit(0);
+  });
+});

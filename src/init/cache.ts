@@ -6,7 +6,11 @@
 // Import modules
 import { get } from '../config';
 import Redis, { Redis as RedisType } from 'ioredis';
-import { instanceContext } from './instance';
+import {
+  addInstanceConnection,
+  type InstanceConnection,
+  instanceContext,
+} from './instance';
 
 // Read configuration
 const redisUrl: string = get('REDIS_URL');
@@ -16,7 +20,7 @@ const redisNamespace: string = get('REDIS_NAMESPACE');
  * Asuna Cache.
  * The unified cache-layer for the application.
  */
-class Cache {
+class Cache implements InstanceConnection {
   /**
    * The redis instance.
    */
@@ -75,7 +79,7 @@ class Cache {
    * @param ttl - The time to live for the cache.
    * @returns The result of setting the cache.
    */
-  async set(key: string, value: unknown, ttl: number): Promise<'OK'> {
+  set(key: string, value: unknown, ttl: number): Promise<'OK'> {
     const strValue = JSON.stringify(value);
     return this._redisClient.setex(key, ttl, strValue);
   }
@@ -85,7 +89,7 @@ class Cache {
    * @param keyValueSet - An array of key-value pairs.
    * @returns The result of setting the cache.
    */
-  async mset(keyValueSet: { key: string; value: unknown }[]): Promise<'OK'> {
+  mset(keyValueSet: { key: string; value: unknown }[]): Promise<'OK'> {
     const flat: string[] = [];
     keyValueSet.forEach(({ key, value }) => {
       flat.push(key, JSON.stringify(value));
@@ -98,7 +102,7 @@ class Cache {
    * @param keys - The cache key(s).
    * @returns The number of keys deleted.
    */
-  async del(keys: string | string[]): Promise<number> {
+  del(keys: string | string[]): Promise<number> {
     if (Array.isArray(keys)) {
       return this._redisClient.del(...keys);
     }
@@ -121,7 +125,7 @@ class Cache {
    * @param key - The cache key.
    * @returns The TTL in seconds.
    */
-  async getTTL(key: string): Promise<number> {
+  getTTL(key: string): Promise<number> {
     return this._redisClient.ttl(key);
   }
 
@@ -129,7 +133,7 @@ class Cache {
    * List all keys within the cache.
    * @returns An array of all keys.
    */
-  async keys(): Promise<string[]> {
+  keys(): Promise<string[]> {
     return this._redisClient.keys('*');
   }
 
@@ -137,7 +141,7 @@ class Cache {
    * Get cache statistics.
    * @returns An object containing cache statistics.
    */
-  async getStats(): Promise<string> {
+  getStats(): Promise<string> {
     return this._redisClient.info();
   }
 
@@ -145,7 +149,7 @@ class Cache {
    * Flush the whole data and reset the cache.
    * @returns True if the cache is flushed.
    */
-  async flushAll(): Promise<'OK'> {
+  flushAll(): Promise<'OK'> {
     return this._redisClient.flushall();
   }
 
@@ -153,8 +157,8 @@ class Cache {
    * Close the cache connection and clean up resources.
    * @returns Resolves when the cache is closed.
    */
-  async close(): Promise<'OK'> {
-    return this._redisClient.quit();
+  async close(): Promise<void> {
+    await this._redisClient.quit();
   }
 }
 
@@ -172,6 +176,7 @@ export function useCache(): Cache {
   });
 
   const cache = new Cache(client);
+  addInstanceConnection(cache);
   instanceContext.set('Cache', cache);
   return cache;
 }
