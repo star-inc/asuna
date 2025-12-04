@@ -10,7 +10,6 @@ import {
   instanceId,
   instanceStartupTime,
   instanceUrl,
-  setupProcess,
 } from './src/init/instance';
 import {
   invokeApp,
@@ -33,9 +32,6 @@ const displayStatus = (workerPool: Map<string, Worker>) => {
   console.info('[Instance ID]:', instanceId);
   console.info('[Instance URL]:', instanceUrl);
 };
-
-// Setup process
-setupProcess();
 
 invokeApp().
   loadRoutes(routerNames).
