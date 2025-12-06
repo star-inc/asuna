@@ -18,8 +18,12 @@ const amqpDurable = getEnabled('AMPQ_DURABLE');
 
 /**
  * @param message - The message.
+ * @param channel - The channel instance.
  */
-type SubscribeCallback = (message: amqp.ConsumeMessage|null) => void;
+export type PayloadCallback = (
+  message: amqp.ConsumeMessage|null,
+  channel: amqp.Channel,
+) => void;
 
 /**
  * Asuna Queue.
@@ -67,10 +71,12 @@ class Queue {
    * @param topic - The topic to subscribe.
    * @param callback - The callback function.
    */
-  subscribe(topic: string, callback: SubscribeCallback): void {
+  subscribe(topic: string, callback: PayloadCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
     this._channel.assertQueue(topic, { durable: amqpDurable });
-    this._channel.consume(topic, callback, { noAck: true });
+    this._channel.consume(topic, (message) => {
+      callback(message, this._channel!);
+    }, { noAck: true });
   }
 
   /**
@@ -78,10 +84,12 @@ class Queue {
    * @param topic - The topic to receive.
    * @param callback - The callback function.
    */
-  receive(topic: string, callback: SubscribeCallback): void {
+  receive(topic: string, callback: PayloadCallback): void {
     if (!this._channel) throw new Error('Channel is not initialized');
     this._channel.assertQueue(topic, { durable: amqpDurable });
-    this._channel.consume(topic, callback, { noAck: false });
+    this._channel.consume(topic, (message) => {
+      callback(message, this._channel!);
+    }, { noAck: false });
   }
 
   /**
