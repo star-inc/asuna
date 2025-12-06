@@ -20,7 +20,10 @@ const amqpDurable = getEnabled('AMPQ_DURABLE');
  * @param message - The message.
  * @param channel - The channel instance.
  */
-type PayloadCallback = (message: amqp.ConsumeMessage|null, channel: amqp.Channel) => void;
+export type PayloadCallback = (
+  message: amqp.ConsumeMessage|null,
+  channel: amqp.Channel,
+) => void;
 
 /**
  * Asuna Queue.
