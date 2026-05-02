@@ -17,12 +17,14 @@ RUN adduser -HD \
     flandre
 
 WORKDIR /app
+RUN chown 3000:3000 /app
 
-COPY package.json ./
+USER 3000
+
+COPY --chown=3000:3000 package.json ./
 RUN bun install
 
 COPY --chown=3000:3000 . .
-USER 3000
 
 EXPOSE 3000
 CMD ["bun", "start"]
