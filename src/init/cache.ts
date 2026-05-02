@@ -4,8 +4,17 @@
 // cache-layer is used as an in-memory cache.
 
 // Import modules
-import { get } from '../config';
-import Redis, { Redis as RedisType } from 'ioredis';
+import {
+  type ConnectionOptions,
+} from 'node:tls';
+import Redis, {
+  type Redis as RedisType,
+} from 'ioredis';
+import {
+  get,
+  getEnabled,
+  getSplitted,
+} from '../config';
 import {
   addInstanceConnection,
   type InstanceConnection,
@@ -163,6 +172,53 @@ class Cache implements InstanceConnection {
 }
 
 /**
+ * Create a new Redis client instance.
+ * @returns The Redis client instance.
+ */
+function createRedisClient(): RedisType {
+  const keyPrefix = `${redisNamespace}:`;
+
+  if (redisUrl !== 'use://sentinel') {
+    return new Redis(redisUrl, {
+      keyPrefix,
+    });
+  }
+
+  const sentinelHosts = getSplitted('REDIS_SENTINEL_HOSTS');
+  const sentinelPort = get('REDIS_SENTINEL_PORT');
+  const sentinelName = get('REDIS_SENTINEL_NAME');
+  const sentinelPasswordRaw = get('REDIS_SENTINEL_PASSWORD');
+  const isSentinelTLS = getEnabled('REDIS_SENTINEL_TLS');
+  const connectionPasswordRaw = get('REDIS_CONNECTION_PASSWORD');
+  const connectionTLS = get('REDIS_CONNECTION_TLS');
+
+  const port = parseInt(sentinelPort, 10) || 26379;
+  const sentinelPassword = sentinelPasswordRaw || undefined;
+  const connectionPassword = connectionPasswordRaw || undefined;
+  const tlsParsed: ConnectionOptions | undefined = connectionTLS ?
+    JSON.parse(connectionTLS) : undefined;
+
+  if (isSentinelTLS && !connectionTLS) {
+    console.warn(
+      'REDIS_SENTINEL_TLS is enabled but REDIS_CONNECTION_TLS is not set. ' +
+      'Falling back to ioredis default TLS options.',
+    );
+  }
+
+  return new Redis({
+    keyPrefix,
+    name: sentinelName,
+    sentinels: sentinelHosts.map((host) => (
+      { host, port }
+    )),
+    sentinelPassword,
+    password: connectionPassword,
+    enableTLSForSentinelMode: isSentinelTLS,
+    tls: isSentinelTLS ? tlsParsed : undefined,
+  });
+}
+
+/**
  * Composable cache.
  * @returns The cache layer.
  */
@@ -171,9 +227,8 @@ export function useCache(): Cache {
     return instanceContext.get('Cache') as Cache;
   }
 
-  const client = new Redis(redisUrl, {
-    keyPrefix: `${redisNamespace}:`,
-  });
+  // Detect it's sentinel or not.
+  const client = createRedisClient();
 
   const cache = new Cache(client);
   addInstanceConnection(cache);
